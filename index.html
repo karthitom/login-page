@@ -38,7 +38,7 @@
             
             status.innerText = "> PROCESSING...";
             try {
-                const res = await fetch(`http://localhost:5000/${mode}`, {
+                const res = await fetch(`https://login-page-by-karthi.vercel.app/${mode}`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({email, password})
