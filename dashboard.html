@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TERMINAL_OVERRIDE</title>
+    <style>
+        body {
+            margin: 0; padding: 0; background: black;
+            overflow: hidden; font-family: 'Courier New', monospace;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; flex-direction: column;
+        }
+
+        /* Matrix Rain Canvas */
+        #matrix {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; z-index: -1;
+            opacity: 0.3;
+        }
+
+        .container {
+            text-align: center; background: rgba(0, 0, 0, 0.8);
+            padding: 50px; border: 2px solid #ff0000;
+            box-shadow: 0 0 30px #ff0000;
+            z-index: 1;
+        }
+
+        .glitch-text {
+            color: #ff0000; font-size: 4rem; font-weight: bold;
+            text-transform: uppercase; animation: shake 0.2s infinite;
+            letter-spacing: 10px;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(2px, 1px); }
+            50% { transform: translate(-2px, -1px); }
+            100% { transform: translate(1px, 2px); }
+        }
+
+        .timer {
+            color: #fff; font-size: 2rem; margin-top: 20px;
+            border: 1px solid #fff; padding: 10px;
+            display: inline-block;
+        }
+
+        .status-msg {
+            color: #00ff41; margin-top: 30px; font-size: 14px;
+            text-align: left; line-height: 1.6;
+        }
+
+        .warning { color: yellow; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrix"></canvas>
+
+    <div class="container">
+        <div class="glitch-text">YOU ARE TRAPPED</div>
+        <div class="status-msg">
+            > [SYSTEM]: UNAUTHORIZED ACCESS DETECTED<br>
+            > [IP]: 192.168.1.XXX (TRACED)<br>
+            > [ACTION]: <span class="warning">TERMINAL LOCKED</span><br>
+            > [STATUS]: SELF-DESTRUCT INITIALIZED...
+        </div>
+        <div class="timer" id="countdown">SEC: 10:00</div>
+    </div>
+
+    <script>
+        // --- Matrix Rain Effect ---
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()*&^%";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#00ff41";
+            ctx.font = fontSize + "px monospace";
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 50);
+
+        // --- Countdown Timer ---
+        let seconds = 10;
+        const timerElement = document.getElementById('countdown');
+        const interval = setInterval(() => {
+            seconds--;
+            timerElement.innerText = `SEC: ${seconds < 10 ? '0' + seconds : seconds}:00`;
+            if (seconds <= 0) {
+                clearInterval(interval);
+                document.body.innerHTML = "<h1 style='color:red; font-size:100px; text-align:center; margin-top:200px;'>SYSTEM PURGED</h1>";
+            }
+        }, 1000);
+
+        // Block Back Button
+        history.pushState(null, null, location.href);
+        window.onpopstate = () => history.go(1);
+    </script>
+</body>
+</html>

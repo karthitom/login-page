@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KAITHI_NETWORK | AUTH</title>
+    <style>
+        body { background: #000; color: #00ff41; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { border: 1px solid #00ff41; padding: 30px; width: 320px; box-shadow: 0 0 15px #00ff4133; }
+        input { width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 10px; margin: 10px 0; box-sizing: border-box; outline: none; }
+        input:focus { border-color: #00ff41; }
+        button { width: 100%; background: #00ff41; color: #000; padding: 10px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .switch { text-align: center; font-size: 11px; margin-top: 15px; cursor: pointer; text-decoration: underline; }
+        #status { margin-top: 15px; font-size: 11px; text-align: center; height: 15px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2 id="title">:: LOGIN ::</h2>
+        <input type="email" id="email" placeholder="EMAIL_ID">
+        <input type="password" id="password" placeholder="PASSWORD">
+        <button id="btn" onclick="runAuth()">INITIALIZE</button>
+        <div class="switch" id="toggle" onclick="toggle()">New User? Create Account</div>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        let mode = 'login';
+        function toggle() {
+            mode = (mode === 'login') ? 'register' : 'login';
+            document.getElementById('title').innerText = (mode === 'login') ? ':: LOGIN ::' : ':: REGISTER ::';
+            document.getElementById('toggle').innerText = (mode === 'login') ? 'New User? Create Account' : 'Back to Login';
+        }
+
+        async function runAuth() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const status = document.getElementById('status');
+            
+            status.innerText = "> PROCESSING...";
+            try {
+                const res = await fetch(`http://localhost:5000/${mode}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({email, password})
+                });
+                const data = await res.json();
+                if(res.ok) {
+                    status.style.color = "#00ff41";
+                    status.innerText = "> SUCCESS!";
+                    if(mode === 'login') {
+                        setTimeout(() => window.location.href = "dashboard.html", 800);
+                    } else {
+                        setTimeout(toggle, 1500);
+                    }
+                } else {
+                    status.style.color = "red";
+                    status.innerText = "> " + data.msg;
+                }
+            } catch(e) { status.innerText = "> SERVER_ERROR"; }
+        }
+    </script>
+    <audio id="hackerAudio" loop>
+    <source src="https://www.soundjay.com/communication/sounds/computer-beeps-2.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    // User screen-la click panna udane sound play aagum (Browser policy)
+    document.body.addEventListener('click', () => {
+        document.getElementById('hackerAudio').play();
+    }, { once: true });
+</script>
+</body>
+</html>
