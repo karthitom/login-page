@@ -1,87 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>KAITHI_NETWORK | THE_GHOST_VAULT</title>
+    <title>KAITHI_NETWORK | STANDALONE_CTF</title>
     <style>
-        :root { --neon: #00ff41; --bg: #050505; }
-        body {
-            background: var(--bg);
-            color: var(--neon);
-            font-family: 'Courier New', monospace;
-            display: flex; justify-content: center; align-items: center;
-            height: 100vh; margin: 0; overflow: hidden;
-        }
-        .login-box {
-            border: 1px solid var(--neon);
-            padding: 40px;
-            width: 380px;
-            background: rgba(0,0,0,0.9);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
-            text-align: center;
-        }
-        h2 { letter-spacing: 5px; text-transform: uppercase; margin-bottom: 30px; }
-        input {
-            width: 100%; background: #0a0a0a; border: 1px solid #222;
-            color: #fff; padding: 12px; margin: 10px 0; outline: none;
-            box-sizing: border-box;
-        }
-        input:focus { border-color: var(--neon); }
-        button {
-            width: 100%; background: var(--neon); color: #000;
-            padding: 12px; border: none; font-weight: bold;
-            cursor: pointer; margin-top: 20px; text-transform: uppercase;
-        }
-        #output { margin-top: 25px; font-size: 11px; text-align: left; opacity: 0.7; }
+        body { background: #000; color: #00ff41; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { border: 1px solid #00ff41; padding: 40px; width: 350px; background: #050505; text-align: center; }
+        input { width: 100%; background: #000; border: 1px solid #222; color: #fff; padding: 12px; margin: 10px 0; outline: none; }
+        button { width: 100%; background: #00ff41; color: #000; padding: 12px; border: none; font-weight: bold; cursor: pointer; }
+        #status { margin-top: 20px; font-size: 11px; }
     </style>
 </head>
 <body>
 
-    <div class="login-box">
-        <h2>:: KAITHI_VAULT ::</h2>
-        <input type="text" id="username" placeholder="USERNAME">
-        <input type="password" id="password" placeholder="PASSWORD">
-        <button onclick="ignite()">INITIALIZE_BREACH</button>
-        <div id="output">> SYSTEM_READY...</div>
-    </div>
+<div class="box">
+    <h2>:: LOCAL_VAULT ::</h2>
+    <input type="text" id="u" placeholder="USERNAME">
+    <input type="password" id="p" placeholder="PASSWORD">
+    <button onclick="check()">INIT_DECRYPT</button>
+    <div id="status">> SYSTEM_IDLE</div>
+</div>
 
-    <script>
-        // "Ahh Valthukal Valthukal" -> Base64 -> ROT13
-        // Code-la plain text-ah flag irukkaadhu
-        const _0x_vlt = "Quib VZbsgu bxbcl BZbsgu bxbcl=";
+<script>
+    // Double Encoded Flag: "Ahh Valthukal Valthukal"
+    const _0x_flag = "Quib VZbsgu bxbcl BZbsgu bxbcl=";
 
-        async function ignite() {
-            const u = document.getElementById('username').value;
-            const p = document.getElementById('password').value;
-            const out = document.getElementById('output');
+    function check() {
+        const user = document.getElementById('u').value;
+        const pass = document.getElementById('p').value;
+        const status = document.getElementById('status');
 
-            out.innerText = "> INJECTING_PAYLOAD...";
+        status.innerText = "> DECRYPTING_BUFFER...";
 
-            try {
-                const res = await fetch('/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: u, password: p })
-                });
+        // No server request, local check
+        if(user === "admin" && pass === "kaithi777") {
+            setTimeout(() => {
+                status.style.color = "#00ff41";
+                status.innerHTML = "> ACCESS_GRANTED!<br>> FLAG_INJECTED_INTO_CONSOLE.";
                 
-                const data = await res.json();
-
-                if (res.ok) {
-                    out.style.color = "#00ff41";
-                    out.innerHTML = `> SUCCESS: ${data.message}<br><br>> HINT: ${data.hint}`;
-                    
-                    // REVEALING THE FLAG IN CONSOLE (CTF STYLE)
-                    console.log("%c [!] ALERT: HIDDEN_PAYLOAD_EXTRACTED", "color: red; font-weight: bold; font-size: 15px;");
-                    console.log("%c [DATA]: " + _0x_vlt, "color: #00ff41; background: #111; padding: 5px; border: 1px solid #00ff41;");
-                    console.log("%c [!] INSTRUCTION: 1. ROT13 Decode -> 2. Base64 Decode", "color: gray;");
-                } else {
-                    out.style.color = "red";
-                    out.innerText = "> " + data.message;
-                }
-            } catch (err) {
-                out.innerText = "> ERROR: SERVER_UNREACHABLE";
-            }
+                console.log("%c [!] ALERT: HIDDEN_PAYLOAD_FOUND", "color: red; font-weight: bold;");
+                console.log("%c [DATA]: " + _0x_flag, "color: #00ff41; background: #111; padding: 5px;");
+                console.log("%c [HINT]: ROT13 -> Base64", "color: gray;");
+            }, 1000);
+        } else {
+            status.style.color = "red";
+            status.innerText = "> ERROR: AUTH_FAILED";
         }
-    </script>
+    }
+</script>
 </body>
 </html>
