@@ -1,51 +1,81 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>KAITHI_NETWORK | STANDALONE_CTF</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAITHI_NETWORK | SECURE_VAULT</title>
     <style>
-        body { background: #000; color: #00ff41; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .box { border: 1px solid #00ff41; padding: 40px; width: 350px; background: #050505; text-align: center; }
-        input { width: 100%; background: #000; border: 1px solid #222; color: #fff; padding: 12px; margin: 10px 0; outline: none; }
-        button { width: 100%; background: #00ff41; color: #000; padding: 12px; border: none; font-weight: bold; cursor: pointer; }
-        #status { margin-top: 20px; font-size: 11px; }
+        :root { --neon: #00ff41; --bg: #050505; }
+        body {
+            background: var(--bg);
+            color: var(--neon);
+            font-family: 'Courier New', monospace;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; margin: 0; overflow: hidden;
+        }
+        .login-box {
+            border: 1px solid var(--neon);
+            padding: 40px;
+            width: 350px;
+            background: rgba(0, 0, 0, 0.95);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+            text-align: center;
+        }
+        h2 { letter-spacing: 5px; text-transform: uppercase; margin-bottom: 30px; }
+        input {
+            width: 100%; background: #0a0a0a; border: 1px solid #222;
+            color: #fff; padding: 12px; margin: 10px 0; outline: none;
+            box-sizing: border-box; text-align: center;
+        }
+        input:focus { border-color: var(--neon); box-shadow: 0 0 10px rgba(0,255,65,0.1); }
+        button {
+            width: 100%; background: var(--neon); color: #000;
+            padding: 12px; border: none; font-weight: bold;
+            cursor: pointer; margin-top: 20px; text-transform: uppercase;
+        }
+        button:hover { background: #fff; }
+        #status { margin-top: 25px; font-size: 11px; text-align: left; color: #888; border-top: 1px solid #222; padding-top: 15px; }
     </style>
 </head>
 <body>
 
-<div class="box">
-    <h2>:: LOCAL_VAULT ::</h2>
-    <input type="text" id="u" placeholder="USERNAME">
-    <input type="password" id="p" placeholder="PASSWORD">
-    <button onclick="check()">INIT_DECRYPT</button>
-    <div id="status">> SYSTEM_IDLE</div>
-</div>
+    <div class="login-box">
+        <h2>:: VAULT_v2 ::</h2>
+        <input type="text" id="user" placeholder="USERNAME">
+        <input type="password" id="pass" placeholder="PASSWORD">
+        <button onclick="breach()">BREACH_VAULT</button>
+        <div id="status">> SYSTEM_READY...</div>
+    </div>
 
-<script>
-    // Double Encoded Flag: "Ahh Valthukal Valthukal"
-    const _0x_flag = "Quib VZbsgu bxbcl BZbsgu bxbcl=";
+    <script>
+        // Double Encoded Flag: "Ahh Valthukal Valthukal"
+        // Base64 -> ROT13 transformation
+        const _0x_vlt = "Quib VZbsgu bxbcl BZbsgu bxbcl=";
 
-    function check() {
-        const user = document.getElementById('u').value;
-        const pass = document.getElementById('p').value;
-        const status = document.getElementById('status');
+        function breach() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+            const out = document.getElementById('status');
 
-        status.innerText = "> DECRYPTING_BUFFER...";
+            out.innerText = "> DECRYPTING_LOCAL_BUFFER...";
 
-        // No server request, local check
-        if(user === "admin" && pass === "kaithi777") {
+            // Simulating a network delay for hacker feel
             setTimeout(() => {
-                status.style.color = "#00ff41";
-                status.innerHTML = "> ACCESS_GRANTED!<br>> FLAG_INJECTED_INTO_CONSOLE.";
-                
-                console.log("%c [!] ALERT: HIDDEN_PAYLOAD_FOUND", "color: red; font-weight: bold;");
-                console.log("%c [DATA]: " + _0x_flag, "color: #00ff41; background: #111; padding: 5px;");
-                console.log("%c [HINT]: ROT13 -> Base64", "color: gray;");
-            }, 1000);
-        } else {
-            status.style.color = "red";
-            status.innerText = "> ERROR: AUTH_FAILED";
+                if (u === "admin" && p === "kaithi777") {
+                    out.style.color = "#00ff41";
+                    out.innerHTML = "> ACCESS_GRANTED!<br>> FLAG_INJECTED_INTO_MEMORY.";
+                    
+                    // REVEALING THE FLAG IN CONSOLE
+                    console.clear();
+                    console.log("%c [!] ALERT: HIDDEN_PAYLOAD_EXTRACTED", "color: red; font-weight: bold; font-size: 16px;");
+                    console.log("%c [DATA]: " + _0x_vlt, "color: #00ff41; background: #111; padding: 10px; border: 1px solid #00ff41;");
+                    console.log("%c [HINT]: 1. ROT13 Decode -> 2. Base64 Decode", "color: cyan; font-style: italic;");
+                } else {
+                    out.style.color = "red";
+                    out.innerText = "> ERROR: UNAUTHORIZED_ACCESS_DETECTED";
+                }
+            }, 1200);
         }
-    }
-</script>
+    </script>
 </body>
 </html>
