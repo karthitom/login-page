@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KAITHI_NETWORK | SECURE_VAULT</title>
+    <title>KAITHI_NETWORK | SECURE_CTF</title>
     <style>
         :root { --neon: #00ff41; --bg: #050505; }
         body {
@@ -16,9 +16,9 @@
         .login-box {
             border: 1px solid var(--neon);
             padding: 40px;
-            width: 350px;
+            width: 360px;
             background: rgba(0, 0, 0, 0.95);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+            box-shadow: 0 0 25px rgba(0, 255, 65, 0.2);
             text-align: center;
         }
         h2 { letter-spacing: 5px; text-transform: uppercase; margin-bottom: 30px; }
@@ -32,49 +32,59 @@
             width: 100%; background: var(--neon); color: #000;
             padding: 12px; border: none; font-weight: bold;
             cursor: pointer; margin-top: 20px; text-transform: uppercase;
+            transition: 0.3s;
         }
-        button:hover { background: #fff; }
+        button:hover { background: #fff; box-shadow: 0 0 15px var(--neon); }
         #status { margin-top: 25px; font-size: 11px; text-align: left; color: #888; border-top: 1px solid #222; padding-top: 15px; }
+        
+        /* Hidden Flag Area (Only visible when highlighted) */
+        #hidden-blob { color: #050505; font-size: 9px; margin-top: 20px; user-select: text; }
+        #hidden-blob::selection { background: var(--neon); color: #000; }
     </style>
 </head>
 <body>
 
     <div class="login-box">
-        <h2>:: VAULT_v2 ::</h2>
+        <h2>:: KAITHI_VAULT ::</h2>
         <input type="text" id="user" placeholder="USERNAME">
         <input type="password" id="pass" placeholder="PASSWORD">
-        <button onclick="breach()">BREACH_VAULT</button>
-        <div id="status">> SYSTEM_READY...</div>
+        <button onclick="pwn()">BREACH_VAULT</button>
+        <div id="status">> SYSTEM_IDLE...</div>
+        
+        <div id="hidden-blob">BUFFER_STREAM: <span id="blob_val">null</span></div>
     </div>
 
     <script>
-        // Double Encoded Flag: "Ahh Valthukal Valthukal"
-        // Base64 -> ROT13 transformation
-        const _0x_vlt = "Quib VZbsgu bxbcl BZbsgu bxbcl=";
+        // "Ahh Valthukal Valthukal" encoded as Base64 then ROT13
+        const FLAG_VAULT = "Quib VZbsgu bxbcl BZbsgu bxbcl=";
 
-        function breach() {
+        function pwn() {
             const u = document.getElementById('user').value;
             const p = document.getElementById('pass').value;
             const out = document.getElementById('status');
+            const blobDisp = document.getElementById('blob_val');
 
-            out.innerText = "> DECRYPTING_LOCAL_BUFFER...";
+            out.innerText = "> INJECTING_EXPLOIT...";
 
-            // Simulating a network delay for hacker feel
+            // Hacker vibe delay
             setTimeout(() => {
                 if (u === "admin" && p === "kaithi777") {
                     out.style.color = "#00ff41";
-                    out.innerHTML = "> ACCESS_GRANTED!<br>> FLAG_INJECTED_INTO_MEMORY.";
+                    out.innerHTML = "> ACCESS_GRANTED!<br>> FLAG_INJECTED_INTO_CONSOLE & BUFFER.";
                     
-                    // REVEALING THE FLAG IN CONSOLE
+                    // Reveal the blob in the hidden area
+                    blobDisp.innerText = FLAG_VAULT;
+
+                    // Console reveal
                     console.clear();
-                    console.log("%c [!] ALERT: HIDDEN_PAYLOAD_EXTRACTED", "color: red; font-weight: bold; font-size: 16px;");
-                    console.log("%c [DATA]: " + _0x_vlt, "color: #00ff41; background: #111; padding: 10px; border: 1px solid #00ff41;");
-                    console.log("%c [HINT]: 1. ROT13 Decode -> 2. Base64 Decode", "color: cyan; font-style: italic;");
+                    console.log("%c [!] ALERT: HIDDEN_PAYLOAD_EXTRACTED", "color: red; font-weight: bold; font-size: 18px;");
+                    console.log("%c [DATA]: " + FLAG_VAULT, "color: #00ff41; background: #111; padding: 10px; border: 1px solid #00ff41;");
+                    console.log("%c [INSTRUCTION]: 1. ROT13 Decode -> 2. Base64 Decode", "color: cyan; font-style: italic;");
                 } else {
                     out.style.color = "red";
-                    out.innerText = "> ERROR: UNAUTHORIZED_ACCESS_DETECTED";
+                    out.innerText = "> ERROR: UNAUTHORIZED_ACCESS";
                 }
-            }, 1200);
+            }, 1000);
         }
     </script>
 </body>
