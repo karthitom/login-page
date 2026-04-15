@@ -3,87 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KAITHI_NETWORK | SECURE_VAULT</title>
+    <title>Cyber Login | ROT3</title>
     <style>
-        :root { --neon: #00ff41; --bg: #050505; }
         body {
-            background: var(--bg);
-            color: var(--neon);
-            font-family: 'Courier New', monospace;
-            display: flex; justify-content: center; align-items: center;
-            height: 100vh; margin: 0; overflow: hidden;
+            background-color: #0a0a0a;
+            color: #00ff41; /* Matrix green color */
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
-        .container {
-            border: 1px solid var(--neon);
-            padding: 40px;
-            width: 380px;
-            background: rgba(0, 0, 0, 0.95);
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
-            text-align: center;
+
+        .login-box {
+            border: 2px solid #00ff41;
+            padding: 30px;
+            box-shadow: 0 0 15px #00ff41;
+            background: rgba(0, 0, 0, 0.9);
+            width: 350px;
         }
-        h2 { letter-spacing: 5px; text-transform: uppercase; margin-bottom: 30px; }
+
+        h2 { text-align: center; text-transform: uppercase; letter-spacing: 3px; }
+
         input {
-            width: 100%; background: #0a0a0a; border: 1px solid #222;
-            color: #fff; padding: 12px; margin: 10px 0; outline: none;
-            box-sizing: border-box; text-align: center;
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            background: #111;
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            box-sizing: border-box;
         }
-        input:focus { border-color: var(--neon); box-shadow: 0 0 10px rgba(0,255,65,0.1); }
-        button {
-            width: 100%; background: var(--neon); color: #000;
-            padding: 12px; border: none; font-weight: bold;
-            cursor: pointer; margin-top: 20px; text-transform: uppercase;
+
+        .output-container {
+            margin-top: 20px;
+            padding: 10px;
+            border-top: 1px dashed #00ff41;
+            font-size: 0.9rem;
         }
-        button:hover { background: #fff; box-shadow: 0 0 15px var(--neon); }
-        #status { margin-top: 25px; font-size: 11px; text-align: left; color: #555; border-top: 1px solid #222; padding-top: 15px; }
-        
-        /* Hidden Flag Area: Only visible when highlighted */
-        .ghost-vault { color: #050505; font-size: 10px; margin-top: 20px; user-select: text; }
-        .ghost-vault::selection { background: var(--neon); color: #000; }
+
+        #rot3-output {
+            color: #ff003c; /* Cyber pink/red for the encoded part */
+            word-break: break-all;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>:: VAULT_v4 ::</h2>
-        <input type="text" id="u" placeholder="IDENTITY">
-        <input type="password" id="p" placeholder="ACCESS_KEY">
-        <button onclick="breach()">INITIALIZE_BREACH</button>
-        <div id="status">> SYSTEM_IDLE...</div>
-        
-        <div class="ghost-vault">BUFFER_STREAM: <span id="v_data">null</span></div>
+<div class="login-box">
+    <h2>Access Terminal</h2>
+    <input type="text" id="username" placeholder="USERNAME" autocomplete="off">
+    <input type="password" id="password" placeholder="PASSWORD" oninput="convertToRot3()">
+    
+    <div class="output-container">
+        <strong>ROT3 Encoded:</strong> <span id="rot3-output">...</span>
     </div>
-
-    <script>
-        // "Ahh Valthukal Valthukal" -> Base64 -> ROT13
-        const _0x_flag = "Quib VZbsgu bxbcl BZbsgu bxbcl=";
-
-        function breach() {
-            const user = document.getElementById('u').value;
-            const pass = document.getElementById('p').value;
-            const status = document.getElementById('status');
-            const vault = document.getElementById('v_data');
-
-            status.innerText = "> INJECTING_PAYLOAD...";
-
-            setTimeout(() => {
-                if (user === "admin" && pass === "kaithi777") {
-                    status.style.color = "#00ff41";
-                    status.innerHTML = "> ACCESS_GRANTED!<br>> FLAG_INJECTED_INTO_CONSOLE & BUFFER.";
-                    
-                    // Reveal the encoded string to the hidden area
-                    vault.innerText = _0x_flag;
-
-                    // Reveal in Console with style
-                    console.clear();
-                    console.log("%c [!] ALERT: HIDDEN_PAYLOAD_EXTRACTED", "color: red; font-weight: bold; font-size: 18px;");
-                    console.log("%c [DATA]: " + _0x_flag, "color: #00ff41; background: #111; padding: 10px; border: 1px solid #00ff41;");
-                    console.log("%c [HINT]: 1. ROT13 Decode -> 2. Base64 Decode", "color: cyan; font-style: italic;");
-                } else {
-                    status.style.color = "red";
-                    status.innerText = "> ERROR: AUTH_FAILED - UNAUTHORIZED_ACCESS";
-                }
-            }, 1000);
-        }
-    </script>
-</body>
-</html>
+</div>
