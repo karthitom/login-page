@@ -3,36 +3,40 @@ from flask_cors import CORS
 import codecs
 
 app = Flask(__name__)
-# Vercel deployment-la cookies work aaga credentials support kandippa venum
-CORS(app, supports_credentials=True)
+CORS(app)
 
-# Double Encoded Blob: [Base64 + ROT13]
+# Double Encoded: [Base64 + ROT13]
 # Original: "Ahh Valthukal Valthukal"
-# Yaraachum code-ai paartha idhu dhaan theriyum
-HIDDEN_FLAG_BLOB = "Quib VZbsgu bxbcl BZbsgu bxbcl="
+# Code-la idhu mattum thaan irukkum
+HIDDEN_FLAG = "Quib VZbsgu bxbcl BZbsgu bxbcl="
 
 def rot13(text):
     return codecs.encode(text, 'rot_13')
 
 @app.route('/login', methods=['POST'])
 def login():
-    data = request.get_json()
-    email = data.get('email')
-    password = data.get('password')
+    try:
+        data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
 
-    # Challenge Credentials
-    if email == "admin@kaithi.net" and password == "pentest123":
-        resp = make_response(jsonify({
-            "status": "SUCCESS",
-            "message": "Access Granted. Hidden data injected into session.",
-            "hint": "Analyze your cookies for 'ctf_vault' and decode it twice (ROT13 then Base64)!"
-        }))
+        # Target Credentials
+        if email == "admin@kaithi.net" and password == "pentest123":
+            resp = make_response(jsonify({
+                "status": "SUCCESS",
+                "message": "Vault Unlocked.",
+                "hint": "Flag hidden in Response Headers (X-Secret-Flag). Decode it twice!"
+            }))
+            
+            # HEADER-LA FLAG-AI INJECT PANROM
+            resp.headers['X-Secret-Flag'] = HIDDEN_FLAG
+            # CORS issue varaama irukka indha line mukkiyam
+            resp.headers['Access-Control-Expose-Headers'] = 'X-Secret-Flag'
+            return resp
         
-        # Cookie-la encrypted blob-ai set panrom
-        resp.set_cookie('ctf_vault', HIDDEN_FLAG_BLOB, httponly=False, samesite='Lax')
-        return resp
-    
-    return jsonify({"status": "FAILED", "message": "Invalid Identity"}), 401
+        return jsonify({"status": "FAILED", "message": "Invalid Key"}), 401
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": str(e)}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+# Entry point for Vercel
+app = app

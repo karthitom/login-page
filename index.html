@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KAITHI_NETWORK | GHOST_VAULT</title>
+    <title>KAITHI_NETWORK | THE_GHOST_VAULT</title>
     <style>
         :root { --neon: #00ff41; --bg: #050505; }
         body {
@@ -12,12 +12,12 @@
             display: flex; justify-content: center; align-items: center;
             height: 100vh; margin: 0; overflow: hidden;
         }
-        .vault-container {
+        .login-box {
             border: 1px solid var(--neon);
             padding: 40px;
             width: 380px;
-            background: rgba(0, 0, 0, 0.9);
-            box-shadow: 0 0 25px rgba(0, 255, 65, 0.2);
+            background: rgba(0,0,0,0.9);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
             text-align: center;
         }
         h2 { letter-spacing: 5px; text-transform: uppercase; margin-bottom: 30px; }
@@ -32,52 +32,54 @@
             padding: 12px; border: none; font-weight: bold;
             cursor: pointer; margin-top: 20px; text-transform: uppercase;
         }
-        button:hover { background: #fff; box-shadow: 0 0 15px var(--neon); }
-        #console-output {
-            margin-top: 25px; font-size: 11px; text-align: left;
-            border-top: 1px solid #222; padding-top: 15px; color: #888;
-        }
+        #output { margin-top: 25px; font-size: 11px; text-align: left; opacity: 0.7; }
     </style>
 </head>
 <body>
 
-    <div class="vault-container">
-        <h2>:: GHOST_VAULT ::</h2>
-        <input type="email" id="email" placeholder="IDENTITY (admin@kaithi.net)">
-        <input type="password" id="pass" placeholder="ACCESS_KEY (pentest123)">
-        <button onclick="breach()">INITIALIZE_BREACH</button>
-        
-        <div id="console-output">> SYSTEM_IDLE...</div>
+    <div class="login-box">
+        <h2>:: KAITHI_VAULT ::</h2>
+        <input type="text" id="username" placeholder="USERNAME">
+        <input type="password" id="password" placeholder="PASSWORD">
+        <button onclick="ignite()">INITIALIZE_BREACH</button>
+        <div id="output">> SYSTEM_READY...</div>
     </div>
 
     <script>
-        async function breach() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('pass').value;
-            const output = document.getElementById('console-output');
+        // "Ahh Valthukal Valthukal" -> Base64 -> ROT13
+        // Code-la plain text-ah flag irukkaadhu
+        const _0x_vlt = "Quib VZbsgu bxbcl BZbsgu bxbcl=";
 
-            output.innerText = "> INJECTING_EXPLOIT...";
+        async function ignite() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            const out = document.getElementById('output');
+
+            out.innerText = "> INJECTING_PAYLOAD...";
 
             try {
-                // Change URL when deploying to Vercel
-                const response = await fetch('http://127.0.0.1:5000/login', {
+                const res = await fetch('/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
+                    body: JSON.stringify({ username: u, password: p })
                 });
                 
-                const data = await response.json();
+                const data = await res.json();
 
-                if (response.ok) {
-                    output.style.color = "#00ff41";
-                    output.innerHTML = `> ${data.status}: ${data.message}<br><br>> HINT: ${data.hint}`;
-                    console.log("%c [!] FLAG_ENCRYPTED_IN_COOKIES", "color: #00ff41; font-weight: bold;");
+                if (res.ok) {
+                    out.style.color = "#00ff41";
+                    out.innerHTML = `> SUCCESS: ${data.message}<br><br>> HINT: ${data.hint}`;
+                    
+                    // REVEALING THE FLAG IN CONSOLE (CTF STYLE)
+                    console.log("%c [!] ALERT: HIDDEN_PAYLOAD_EXTRACTED", "color: red; font-weight: bold; font-size: 15px;");
+                    console.log("%c [DATA]: " + _0x_vlt, "color: #00ff41; background: #111; padding: 5px; border: 1px solid #00ff41;");
+                    console.log("%c [!] INSTRUCTION: 1. ROT13 Decode -> 2. Base64 Decode", "color: gray;");
                 } else {
-                    output.style.color = "red";
-                    output.innerText = "> " + data.message;
+                    out.style.color = "red";
+                    out.innerText = "> " + data.message;
                 }
             } catch (err) {
-                output.innerText = "> ERROR: CONNECTION_REFUSED";
+                out.innerText = "> ERROR: SERVER_UNREACHABLE";
             }
         }
     </script>
