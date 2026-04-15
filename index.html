@@ -1,14 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>KAITHI_NETWORK | AUTH</title>
+    <meta charset="UTF-8">
+    <title>KAITHI_NETWORK | ROT13_AUTH</title>
     <style>
         body { background: #000; color: #00ff41; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .box { border: 1px solid #00ff41; padding: 30px; width: 320px; box-shadow: 0 0 15px #00ff4133; }
-        input { width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 10px; margin: 10px 0; box-sizing: border-box; outline: none; }
-        button { width: 100%; background: #00ff41; color: #000; padding: 10px; border: none; font-weight: bold; cursor: pointer; }
-        .switch { text-align: center; font-size: 11px; margin-top: 15px; cursor: pointer; text-decoration: underline; }
-        #status { margin-top: 15px; font-size: 11px; text-align: center; color: #00ff41; }
+        .box { border: 1px solid #00ff41; padding: 30px; width: 350px; box-shadow: 0 0 20px rgba(0,255,65,0.2); text-align: center; }
+        h2 { letter-spacing: 5px; text-transform: uppercase; }
+        input { width: 100%; background: #0a0a0a; border: 1px solid #333; color: #fff; padding: 12px; margin: 10px 0; box-sizing: border-box; outline: none; transition: 0.3s; }
+        input:focus { border-color: #00ff41; box-shadow: 0 0 10px #00ff4133; }
+        button { width: 100%; background: #00ff41; color: #000; padding: 12px; border: none; font-weight: bold; cursor: pointer; margin-top: 15px; text-transform: uppercase; }
+        button:hover { background: #fff; }
+        .toggle { margin-top: 20px; font-size: 11px; cursor: pointer; text-decoration: underline; opacity: 0.6; }
+        #status { margin-top: 15px; font-size: 11px; min-height: 15px; }
     </style>
 </head>
 <body>
@@ -16,26 +20,26 @@
         <h2 id="title">:: LOGIN ::</h2>
         <input type="email" id="email" placeholder="EMAIL_ID">
         <input type="password" id="password" placeholder="PASSWORD">
-        <button onclick="runAuth()">INITIALIZE</button>
-        <div class="switch" id="toggle" onclick="toggle()">New User? Register</div>
-        <div id="status"></div>
+        <button onclick="execute()">INITIALIZE</button>
+        <div class="toggle" id="switch" onclick="toggleMode()">New User? Register</div>
+        <div id="status">> WAITING_FOR_INPUT...</div>
     </div>
 
     <script>
         let mode = 'login';
-        function toggle() {
+        function toggleMode() {
             mode = (mode === 'login') ? 'register' : 'login';
             document.getElementById('title').innerText = mode === 'login' ? ':: LOGIN ::' : ':: REGISTER ::';
+            document.getElementById('switch').innerText = mode === 'login' ? 'New User? Register' : 'Back to Login';
         }
 
-        async function runAuth() {
+        async function execute() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const status = document.getElementById('status');
             
-            status.innerText = "> INITIALIZING...";
+            status.innerText = "> EXECUTING_REQUEST...";
             try {
-                // Vercel deployment aana vatti unga full URL-ai inga podunga
                 const res = await fetch(`/${mode}`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
@@ -43,17 +47,21 @@
                 });
                 const data = await res.json();
                 if(res.ok) {
-                    status.innerText = "> SUCCESS!";
+                    status.style.color = "#00ff41";
+                    status.innerText = "> ACCESS_GRANTED!";
                     if(mode === 'login') {
-                        localStorage.setItem('token', data.access_token);
-                        setTimeout(() => window.location.href = "dashboard.html", 1000);
+                        setTimeout(() => window.location.href = "dashboard.html", 800);
                     } else {
-                        setTimeout(toggle, 1500);
+                        setTimeout(toggleMode, 1500);
                     }
                 } else {
+                    status.style.color = "red";
                     status.innerText = "> ERROR: " + data.msg;
                 }
-            } catch(e) { status.innerText = "> CONNECTION_FAILED"; }
+            } catch(e) { 
+                status.style.color = "red";
+                status.innerText = "> FATAL_ERROR: SERVER_NOT_RESPONDING"; 
+            }
         }
     </script>
 </body>
