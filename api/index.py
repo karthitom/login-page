@@ -6,18 +6,21 @@ CORS(app)
 
 @app.route('/login', methods=['POST'])
 def login():
-    data = request.get_json()
-    u = data.get('username')
-    p = data.get('password')
+    try:
+        data = request.get_json()
+        u = data.get('username')
+        p = data.get('password')
 
-    # CTF Credentials
-    if u == "admin" and p == "kaithi777":
-        return jsonify({
-            "status": "SUCCESS",
-            "message": "Authentication Successful. Payload injected into console.",
-            "hint": "F12 amukki Console-ah check pannunga. ROT13 -> Base64 is the way!"
-        }), 200
-    
-    return jsonify({"status": "FAILED", "message": "Invalid Credentials"}), 401
+        if u == "admin" and p == "kaithi777":
+            return jsonify({
+                "status": "SUCCESS",
+                "message": "Auth OK. Payload injected.",
+                "hint": "Check F12 Console. ROT13 -> Base64 is the key!"
+            }), 200
+        
+        return jsonify({"status": "FAILED", "message": "Invalid Key"}), 401
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": str(e)}), 500
 
+# VERY IMPORTANT: app.run() use panna koodathu
 app = app
