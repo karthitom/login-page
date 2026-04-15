@@ -3,60 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Login | ROT3</title>
+    <title>Cyber Terminal | ROT3 Encoder</title>
     <style>
+        /* Cyber Theme Global Styles */
         body {
-            background-color: #0a0a0a;
-            color: #00ff41; /* Matrix green color */
+            background-color: #050505;
+            color: #00ff41;
             font-family: 'Courier New', Courier, monospace;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden;
         }
 
+        /* Matrix-like background effect (Optional) */
+        body::before {
+            content: "101011010101001010110";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            font-size: 20px;
+            line-height: 1;
+            word-break: break-all;
+            z-index: -1;
+        }
+
+        /* The Main Terminal Box */
         .login-box {
+            background: rgba(0, 0, 0, 0.85);
             border: 2px solid #00ff41;
-            padding: 30px;
-            box-shadow: 0 0 15px #00ff41;
-            background: rgba(0, 0, 0, 0.9);
-            width: 350px;
+            padding: 40px;
+            width: 400px;
+            box-shadow: 0 0 20px #00ff41, inset 0 0 10px #00ff41;
+            text-align: center;
+            position: relative;
         }
 
-        h2 { text-align: center; text-transform: uppercase; letter-spacing: 3px; }
+        h2 {
+            margin-top: 0;
+            letter-spacing: 5px;
+            text-shadow: 0 0 10px #00ff41;
+            font-size: 24px;
+        }
+
+        /* Input Styling */
+        .input-group {
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
 
         input {
             width: 100%;
-            padding: 10px;
-            margin: 15px 0;
             background: #111;
             border: 1px solid #00ff41;
+            padding: 12px;
             color: #00ff41;
+            font-family: 'Courier New', Courier, monospace;
             box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
         }
 
-        .output-container {
-            margin-top: 20px;
-            padding: 10px;
+        input:focus {
+            box-shadow: 0 0 15px #00ff41;
+            background: #1a1a1a;
+        }
+
+        /* ROT3 Output Area */
+        .output-section {
+            margin-top: 30px;
+            padding-top: 20px;
             border-top: 1px dashed #00ff41;
-            font-size: 0.9rem;
         }
 
-        #rot3-output {
-            color: #ff003c; /* Cyber pink/red for the encoded part */
+        .output-label {
+            font-size: 14px;
+            color: #ff003c; /* Cyber Pink for contrast */
+            text-shadow: 0 0 5px #ff003c;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        #rot3-result {
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #ff003c;
             word-break: break-all;
+            min-height: 24px;
+            display: block;
+        }
+
+        /* Scanline Animation Effect */
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 255, 65, 0.2);
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: moveScan 4s linear infinite;
+        }
+
+        @keyframes moveScan {
+            0% { top: 0; }
+            100% { top: 100%; }
         }
     </style>
 </head>
 <body>
 
-<div class="login-box">
-    <h2>Access Terminal</h2>
-    <input type="text" id="username" placeholder="USERNAME" autocomplete="off">
-    <input type="password" id="password" placeholder="PASSWORD" oninput="convertToRot3()">
-    
-    <div class="output-container">
-        <strong>ROT3 Encoded:</strong> <span id="rot3-output">...</span>
+    <div class="login-box">
+        <div class="scanline"></div>
+        <h2>ACCESS TERMINAL</h2>
+        
+        <div class="input-group">
+            <label>User Identity</label>
+            <input type="text" placeholder="Enter Username..." id="user">
+        </div>
+
+        <div class="input-group">
+            <label>Encryption Key (Password)</label>
+            <input type="password" placeholder="Enter Password..." id="pass" oninput="runRot3()">
+        </div>
+
+        <div class="output-section">
+            <span class="output-label">ROT3 ENCODED STRING:</span>
+            <span id="rot3-result">_ _ _ _</span>
+        </div>
     </div>
-</div>
+
+    <script>
+        function runRot3() {
+            const input = document.getElementById('pass').value;
+            const outputElement = document.getElementById('rot3-result');
+            
+            let result = "";
+
+            for (let i = 0; i < input.length; i++) {
+                let char = input[i];
+                let code = input.charCodeAt(i);
+
+                // For Uppercase
+                if (code >= 65 && code <= 90) {
+                    result += String.fromCharCode(((code - 65 + 3) % 26) + 65);
+                }
+                // For Lowercase
+                else if (code >= 97 && code <= 122) {
+                    result += String.fromCharCode(((code - 97 + 3) % 26) + 97);
+                }
+                // For numbers or symbols, keep them as is
+                else {
+                    result += char;
+                }
+            }
+
+            // Update UI
+            outputElement.innerText = result || "_ _ _ _";
+        }
+    </script>
+</body>
+</html>
