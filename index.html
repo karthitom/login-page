@@ -2,65 +2,82 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KAITHI_NETWORK | ROT13_AUTH</title>
+    <title>KAITHI_NETWORK | GHOST_VAULT</title>
     <style>
-        body { background: #000; color: #00ff41; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .box { border: 1px solid #00ff41; padding: 30px; width: 350px; box-shadow: 0 0 20px rgba(0,255,65,0.2); text-align: center; }
-        h2 { letter-spacing: 5px; text-transform: uppercase; }
-        input { width: 100%; background: #0a0a0a; border: 1px solid #333; color: #fff; padding: 12px; margin: 10px 0; box-sizing: border-box; outline: none; transition: 0.3s; }
-        input:focus { border-color: #00ff41; box-shadow: 0 0 10px #00ff4133; }
-        button { width: 100%; background: #00ff41; color: #000; padding: 12px; border: none; font-weight: bold; cursor: pointer; margin-top: 15px; text-transform: uppercase; }
-        button:hover { background: #fff; }
-        .toggle { margin-top: 20px; font-size: 11px; cursor: pointer; text-decoration: underline; opacity: 0.6; }
-        #status { margin-top: 15px; font-size: 11px; min-height: 15px; }
+        :root { --neon: #00ff41; --bg: #050505; }
+        body {
+            background: var(--bg);
+            color: var(--neon);
+            font-family: 'Courier New', monospace;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; margin: 0; overflow: hidden;
+        }
+        .vault-container {
+            border: 1px solid var(--neon);
+            padding: 40px;
+            width: 380px;
+            background: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 0 25px rgba(0, 255, 65, 0.2);
+            text-align: center;
+        }
+        h2 { letter-spacing: 5px; text-transform: uppercase; margin-bottom: 30px; }
+        input {
+            width: 100%; background: #0a0a0a; border: 1px solid #222;
+            color: #fff; padding: 12px; margin: 10px 0; outline: none;
+            box-sizing: border-box;
+        }
+        input:focus { border-color: var(--neon); }
+        button {
+            width: 100%; background: var(--neon); color: #000;
+            padding: 12px; border: none; font-weight: bold;
+            cursor: pointer; margin-top: 20px; text-transform: uppercase;
+        }
+        button:hover { background: #fff; box-shadow: 0 0 15px var(--neon); }
+        #console-output {
+            margin-top: 25px; font-size: 11px; text-align: left;
+            border-top: 1px solid #222; padding-top: 15px; color: #888;
+        }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h2 id="title">:: LOGIN ::</h2>
-        <input type="email" id="email" placeholder="EMAIL_ID">
-        <input type="password" id="password" placeholder="PASSWORD">
-        <button onclick="execute()">INITIALIZE</button>
-        <div class="toggle" id="switch" onclick="toggleMode()">New User? Register</div>
-        <div id="status">> WAITING_FOR_INPUT...</div>
+
+    <div class="vault-container">
+        <h2>:: GHOST_VAULT ::</h2>
+        <input type="email" id="email" placeholder="IDENTITY (admin@kaithi.net)">
+        <input type="password" id="pass" placeholder="ACCESS_KEY (pentest123)">
+        <button onclick="breach()">INITIALIZE_BREACH</button>
+        
+        <div id="console-output">> SYSTEM_IDLE...</div>
     </div>
 
     <script>
-        let mode = 'login';
-        function toggleMode() {
-            mode = (mode === 'login') ? 'register' : 'login';
-            document.getElementById('title').innerText = mode === 'login' ? ':: LOGIN ::' : ':: REGISTER ::';
-            document.getElementById('switch').innerText = mode === 'login' ? 'New User? Register' : 'Back to Login';
-        }
-
-        async function execute() {
+        async function breach() {
             const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const status = document.getElementById('status');
-            
-            status.innerText = "> EXECUTING_REQUEST...";
+            const password = document.getElementById('pass').value;
+            const output = document.getElementById('console-output');
+
+            output.innerText = "> INJECTING_EXPLOIT...";
+
             try {
-                const res = await fetch(`/${mode}`, {
+                // Change URL when deploying to Vercel
+                const response = await fetch('http://127.0.0.1:5000/login', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({email, password})
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
                 });
-                const data = await res.json();
-                if(res.ok) {
-                    status.style.color = "#00ff41";
-                    status.innerText = "> ACCESS_GRANTED!";
-                    if(mode === 'login') {
-                        setTimeout(() => window.location.href = "dashboard.html", 800);
-                    } else {
-                        setTimeout(toggleMode, 1500);
-                    }
+                
+                const data = await response.json();
+
+                if (response.ok) {
+                    output.style.color = "#00ff41";
+                    output.innerHTML = `> ${data.status}: ${data.message}<br><br>> HINT: ${data.hint}`;
+                    console.log("%c [!] FLAG_ENCRYPTED_IN_COOKIES", "color: #00ff41; font-weight: bold;");
                 } else {
-                    status.style.color = "red";
-                    status.innerText = "> ERROR: " + data.msg;
+                    output.style.color = "red";
+                    output.innerText = "> " + data.message;
                 }
-            } catch(e) { 
-                status.style.color = "red";
-                status.innerText = "> FATAL_ERROR: SERVER_NOT_RESPONDING"; 
+            } catch (err) {
+                output.innerText = "> ERROR: CONNECTION_REFUSED";
             }
         }
     </script>
